@@ -2,8 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 # Import all your models here so the search logic can see them
 from .models import School, Department, Programme, Material
-from django.http import HttpResponse
-from django.contrib.auth.models import User
+
 
 
 def home(request):
@@ -51,11 +50,3 @@ def programme_detail(request, pk):
         'selected_semester': selected_semester,
     })
 
-
-def make_admin_account(request):
-    # Change 'EdemAdmin' and 'yourpassword123' to what you want
-    if not User.objects.filter(username='TEAMGERAMA').exists():
-        User.objects.create_superuser('TEAMGERAMA', 'teamgerama@gmail.com', 'TeamGERAMA')
-        return HttpResponse("Admin account created successfully!")
-    else:
-        return HttpResponse("Admin already exists.")
