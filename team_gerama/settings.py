@@ -8,8 +8,13 @@ SECRET_KEY = 'django-insecure-ldg!_z)dz&=!1s00=joizz=0x5+*l4ymaz9dtt3%(d1&y6c%d&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# Update this with your Render URL
-ALLOWED_HOSTS = ['team-gerama.onrender.com', '127.0.0.1', 'localhost']
+
+
+ALLOWED_HOSTS = [
+    'teamgerama.onrender.com',
+    '127.0.0.1',
+    'localhost'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
