@@ -39,6 +39,7 @@ class Course(models.Model):
 
 # MOVED: Material is now back at the left margin (No longer inside Course)
 class Material(models.Model):
+    # Ensure null=True and blank=True are present
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='materials', null=True, blank=True)
     title = models.CharField(max_length=255)
     file = models.FileField(upload_to='study_materials/')
