@@ -12,7 +12,7 @@ if not settings.DEBUG:
     from django.views.static import serve
     import os
     urlpatterns += [
-        path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
+        path('study_materials/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
     ]
 else:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

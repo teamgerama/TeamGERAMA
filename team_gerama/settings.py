@@ -83,8 +83,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # This allows WhiteNoise to compress files for faster loading
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+# settings.py
+MEDIA_URL = '/study_materials/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'study_materials')
 # This is important for your PDF previews to work in the browser
 X_FRAME_OPTIONS = 'SAMEORIGIN'
