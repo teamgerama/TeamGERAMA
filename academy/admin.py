@@ -1,42 +1,52 @@
 from django.contrib import admin
-from .models import School, Department, Programme, Material
+from .models import School, Department, Programme, Course, Material
+
+
+@admin.register(School)
+class SchoolAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'school')
+    list_filter = ('school',)
+
+
+@admin.register(Programme)
+class ProgrammeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'department')
+    list_filter = ('department__school', 'department')
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    # This shows the Course hierarchy in the admin list
+    list_display = ('code', 'name', 'programme', 'level', 'semester')
+    list_filter = ('level', 'semester', 'programme')
+    search_fields = ('name', 'code')
 
 
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
-    # Performance boost: fetches related data in one go
-    list_select_related = ('programme__department__school', 'programme__department')
+    # We changed these to reference the COURSE fields
+    list_display = ('title', 'get_course_code', 'get_level', 'get_semester', 'uploaded_at')
 
-    list_display = ('get_course', 'get_school', 'get_department', 'programme', 'level', 'semester', 'uploaded_at')
+    # Filtering materials by the course's attributes
+    list_filter = ('course__level', 'course__semester', 'course__programme')
 
-    list_filter = (
-        'programme__department__school',
-        'programme__department',
-        'level',
-        'semester'
-    )
+    # Helper methods to show course info in the Material list
+    def get_course_code(self, obj):
+        return obj.course.code
 
-    search_fields = ('title', 'programme__name')
+    get_course_code.short_description = 'Course Code'
 
-    # Renames 'title' column to 'Course'
-    def get_course(self, obj):
-        return obj.title
+    def get_level(self, obj):
+        return obj.course.level
 
-    get_course.short_description = 'Course'
-    get_course.admin_order_field = 'title'
+    get_level.short_description = 'Level'
 
-    def get_school(self, obj):
-        return obj.programme.department.school
+    def get_semester(self, obj):
+        return obj.course.semester
 
-    get_school.short_description = 'School'
-
-    def get_department(self, obj):
-        return obj.programme.department
-
-    get_department.short_description = 'Department'
-
-
-# Register other models
-admin.site.register(School)
-admin.site.register(Department)
-admin.site.register(Programme)
+    get_semester.short_description = 'Semester'
