@@ -1,5 +1,7 @@
 from django.db import models
 
+# REMOVED: from .models import ... (Never import a file into itself)
+
 class School(models.Model):
     name = models.CharField(max_length=255)
     def __str__(self): return self.name
@@ -27,20 +29,20 @@ class Course(models.Model):
     ]
 
     programme = models.ForeignKey(Programme, on_delete=models.CASCADE, related_name='courses')
-    name = models.CharField(max_length=255) # e.g., Digital Logic Design
-    code = models.CharField(max_length=20) # e.g., CENG 206
+    name = models.CharField(max_length=255)
+    code = models.CharField(max_length=20)
     level = models.CharField(max_length=3, choices=LEVEL_CHOICES, default='100')
     semester = models.CharField(max_length=1, choices=SEMESTER_CHOICES, default='1')
 
     def __str__(self):
         return f"{self.code} - {self.name}"
 
+# MOVED: Material is now back at the left margin (No longer inside Course)
 class Material(models.Model):
-    # Material now links to COURSE instead of Programme
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='materials')
-    title = models.CharField(max_length=255) # e.g., 2024 Past Questions
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='materials', null=True, blank=True)
+    title = models.CharField(max_length=255)
     file = models.FileField(upload_to='study_materials/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.title} ({self.course.name})"
+        return f"{self.title} ({self.course.name if self.course else 'No Course'})"
