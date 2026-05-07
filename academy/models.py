@@ -14,7 +14,7 @@ class Programme(models.Model):
     name = models.CharField(max_length=255)
     def __str__(self): return self.name
 
-class Material(models.Model):
+class Course(models.Model):
     LEVEL_CHOICES = [
         ('100', 'Level 100'),
         ('200', 'Level 200'),
@@ -26,12 +26,21 @@ class Material(models.Model):
         ('2', 'Semester 2'),
     ]
 
-    programme = models.ForeignKey(Programme, on_delete=models.CASCADE, related_name='materials')
-    title = models.CharField(max_length=255)
+    programme = models.ForeignKey(Programme, on_delete=models.CASCADE, related_name='courses')
+    name = models.CharField(max_length=255) # e.g., Digital Logic Design
+    code = models.CharField(max_length=20) # e.g., CENG 206
     level = models.CharField(max_length=3, choices=LEVEL_CHOICES, default='100')
     semester = models.CharField(max_length=1, choices=SEMESTER_CHOICES, default='1')
+
+    def __str__(self):
+        return f"{self.code} - {self.name}"
+
+class Material(models.Model):
+    # Material now links to COURSE instead of Programme
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='materials')
+    title = models.CharField(max_length=255) # e.g., 2024 Past Questions
     file = models.FileField(upload_to='study_materials/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"[{self.level}-Sem{self.semester}] {self.title}"
+        return f"{self.title} ({self.course.name})"
