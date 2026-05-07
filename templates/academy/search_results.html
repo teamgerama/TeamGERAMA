@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h3>Search Results for "{{ query }}"</h3>
+    <hr>
+    <div class="list-group mt-4">
+        {% for prog in programmes %}
+            <a href="{% url 'programme_detail' prog.pk %}" class="list-group-item list-group-item-action py-3">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ prog.name }}</h5>
+                    <small class="text-muted">{{ prog.department.school.name }}</small>
+                </div>
+                <p class="mb-1 text-muted">{{ prog.department.name }}</p>
+            </a>
+        {% empty %}
+            <div class="alert alert-warning">No programmes found matching your search.</div>
+        {% endfor %}
+    </div>
+    <a href="{% url 'home' %}" class="btn btn-secondary mt-3">View All Schools</a>
+</div>
+{% endblock %}
