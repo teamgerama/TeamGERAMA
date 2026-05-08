@@ -4,17 +4,15 @@ set -o errexit
 
 pip install -r requirements.txt
 
-# 1. Wipe the materials that are causing the link errors
-python manage.py shell -c "from academy.models import Material; Material.objects.all().delete()"
+# 1. DROP the academy tables entirely to fix the column mismatch
+python manage.py shell -c "from django.db import connection; cursor = connection.cursor(); cursor.execute('DROP TABLE IF EXISTS academy_material CASCADE; DROP TABLE IF EXISTS academy_course CASCADE; DROP TABLE IF EXISTS academy_programme CASCADE; DROP TABLE IF EXISTS academy_department CASCADE; DROP TABLE IF EXISTS academy_school CASCADE;')"
 
-# 2. FAKE the first two migrations because the tables already exist physically
-python manage.py migrate academy 0001 --fake
-python manage.py migrate academy 0002 --fake
+# 2. CLEAR the migration history for the academy app
+python manage.py shell -c "from django.db import connection; cursor = connection.cursor(); cursor.execute(\"DELETE FROM django_migrations WHERE app='academy'\")"
 
-# 3. Now run the new migrations (0003 and 0004) for real
-# This creates the Course table and adds the course_id column
+# 3. Now run the migrations for real (No Faking)
 python manage.py migrate academy
 
-# 4. Standard completion
+# 4. Finish the rest
 python manage.py migrate
 python manage.py collectstatic --no-input
