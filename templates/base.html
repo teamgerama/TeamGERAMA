@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TEAM GERAMA</title>
     <!-- Bootstrap CSS for professional styling -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -15,6 +17,7 @@
         .card { border: none; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .card:hover { transform: translateY(-5px); }
     </style>
+
 </head>
 <body>
 
@@ -37,4 +40,66 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<footer class="footer mt-auto py-5 text-white" style="background-color: #052111;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{% static 'logo.png' %}" height="40" class="me-2">
+                    <h5 class="mb-0 fw-bold">GERAMA</h5>
+                </div>
+                <p class="small text-secondary">
+                    Ghana Engineering Resources & Academic Materials Association — empowering engineering excellence at UENR through free, comprehensive academic resources.
+                </p>
+                <div class="d-flex gap-3 mt-4">
+                    <a href="#" class="text-white fs-5"><i class="bi bi-whatsapp"></i></a>
+                    <a href="#" class="text-white fs-5"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white fs-5"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6 ps-lg-5">
+                <h6 class="fw-bold mb-4 text-warning small">QUICK LINKS</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Home</a></li>
+                    <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Resources</a></li>
+                    <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">About</a></li>
+                    <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <h6 class="fw-bold mb-4 text-warning small">RESOURCES</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">L100 Materials</a></li>
+                    <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">L200 Materials</a></li>
+                    <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Past Questions</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <h6 class="fw-bold mb-4 text-warning small">CONTACT US</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="bi bi-envelope-fill me-2 text-warning"></i> gerama.uenr@gmail.com
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="bi bi-whatsapp me-2 text-warning"></i> +233 55 574 9497
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="bi bi-geo-alt-fill me-2 text-warning"></i> UENR, Sunyani, Bono Region, Ghana
+                    </li>
+                </ul>
+                <a href="#" class="btn btn-primary btn-sm rounded-pill px-4 mt-2">
+                    <i class="bi bi-google-drive me-2"></i> Open Google Drive
+                </a>
+            </div>
+        </div>
+        <hr class="my-5 border-secondary">
+        <div class="d-flex justify-content-between small text-secondary">
+            <p>© 2026 GERAMA Academic Resources · All rights reserved</p>
+            <p>Developed by <b>Alexander O. Dwumaah</b> · Editor: <b>Edem H.K Prince</b></p>
+        </div>
+    </div>
+</footer>
 </html>
