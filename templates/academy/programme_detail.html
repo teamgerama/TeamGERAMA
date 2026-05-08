@@ -15,10 +15,9 @@
         <div class="card-body">
             <h6 class="text-muted fw-bold small mb-3">STEP 1: SELECT LEVEL</h6>
             <div class="btn-group">
-                <a href="?level=100" class="btn {% if selected_level == '100' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 100</a>
-                <a href="?level=200" class="btn {% if selected_level == '200' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 200</a>
-                <a href="?level=300" class="btn {% if selected_level == '300' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 300</a>
-                <a href="?level=400" class="btn {% if selected_level == '400' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 400</a>
+                {% for level in "100,200,300,400"|split:"," %}
+                <a href="?level={{ level }}" class="btn {% if selected_level == level %}btn-primary{% else %}btn-outline-primary{% endif %}">Level {{ level }}</a>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -37,64 +36,85 @@
 
     <div class="row">
         {% if not selected_level or not selected_semester %}
-            <div class="col-12 text-center py-5 border rounded bg-light">
-                <p class="text-muted">Please select <strong>Level and Semester</strong> to view engineering materials.</p>
+            <div class="col-12 text-center py-5 border rounded bg-light shadow-sm">
+                <i class="bi bi-info-circle text-muted fs-2"></i>
+                <p class="text-muted mt-2">Please select <strong>Level and Semester</strong> to browse course materials.</p>
             </div>
         {% else %}
-            <h5 class="mb-4">Courses for L{{ selected_level }} - Semester {{ selected_semester }}</h5>
+            <h5 class="mb-4 fw-bold">Courses for L{{ selected_level }} - Semester {{ selected_semester }}</h5>
 
-            {% for course in courses %}
-                <div class="col-12 mb-4">
-                    <div class="card shadow-sm border-0 bg-light">
-                        <div class="card-header bg-white fw-bold text-primary">
-                             {{ course.code }}: {{ course.name }}
-                        </div>
-                        <div class="card-body p-0">
+            <div class="accordion shadow-sm" id="courseAccordion">
+                {% for course in courses %}
+                <div class="accordion-item mb-2 border">
+                    <h2 class="accordion-header" id="heading{{ course.id }}">
+                        <button class="accordion-button collapsed fw-bold text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ course.id }}" aria-expanded="false" aria-controls="collapse{{ course.id }}">
+                            {{ course.code }}: {{ course.name }}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ course.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ course.id }}" data-bs-parent="#courseAccordion">
+                        <div class="accordion-body p-0">
                             <ul class="list-group list-group-flush">
                                 {% for material in course.materials.all %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">
-                                    <div>
-                                        <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
-                                        <span>{{ material.title }}</span>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-file-earmark-arrow-down text-primary me-3 fs-5"></i>
+                                        <span class="fw-semibold">{{ material.title }}</span>
                                     </div>
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-outline-secondary"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modal{{ material.id }}">
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal{{ material.id }}">
                                             Preview
                                         </button>
-                                        <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-success" download>
-                                            Download
+                                        <a href="{{ material.file.url }}" class="btn btn-sm btn-primary" target="_blank">
+                                            Open / View
                                         </a>
                                     </div>
 
                                     <div class="modal fade" id="modal{{ material.id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-xl">
+                                        <div class="modal-dialog modal-xl modal-dialog-centered">
                                             <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">{{ material.title }}</h5>
+                                                <div class="modal-header bg-light">
+                                                    <h5 class="modal-title fw-bold">{{ material.title }}</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body p-0">
-                                                    <iframe src="{{ material.file.url }}" width="100%" height="600px" style="border:none;"></iframe>
+                                                    <div class="ratio ratio-16x9">
+                                                        <iframe src="{{ material.file.url }}" allow="autoplay"></iframe>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a href="{{ material.file.url }}" class="btn btn-success" target="_blank">View Fullscreen</a>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </li>
                                 {% empty %}
-                                <li class="list-group-item text-muted small">No materials uploaded for this course yet.</li>
+                                <li class="list-group-item text-muted small py-3">No materials uploaded for this course yet.</li>
                                 {% endfor %}
                             </ul>
                         </div>
                     </div>
                 </div>
-            {% empty %}
-                <div class="col-12 text-center py-4">
-                    <div class="alert alert-warning">No courses found for this selection.</div>
-                </div>
-            {% endfor %}
+                {% empty %}
+                <div class="alert alert-warning">No courses found for this specific Level and Semester.</div>
+                {% endfor %}
+            </div>
         {% endif %}
     </div>
 </div>
+
+<style>
+    /* Styling to make the accordion look cleaner */
+    .accordion-button:not(.collapsed) {
+        background-color: #e7f1ff;
+        color: #0d6efd;
+    }
+    .accordion-button::after {
+        background-size: 1rem;
+    }
+    .btn-group .btn {
+        padding: 0.4rem 1rem;
+    }
+</style>
 {% endblock %}
