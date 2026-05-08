@@ -54,65 +54,94 @@
                     </h2>
                     <div id="collapse{{ course.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ course.id }}" data-bs-parent="#courseAccordion">
                         <div class="accordion-body p-0">
-                            <ul class="list-group list-group-flush">
-                                {% for material in course.materials.all %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-file-earmark-arrow-down text-primary me-3 fs-5"></i>
-                                        <span class="fw-semibold">{{ material.title }}</span>
-                                    </div>
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal{{ material.id }}">
-                                            Preview
-                                        </button>
-                                        <a href="{{ material.file.url }}" class="btn btn-sm btn-primary" target="_blank">
-                                            Open / View
-                                        </a>
-                                    </div>
+                           <ul class="list-group list-group-flush">
+    {% for material in course.materials.all %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-file-earmark-text text-primary me-3 fs-5"></i>
+            <span class="fw-semibold">{{ material.title }}</span>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-outline-primary"
+                    onclick="openPreview('{{ material.file.url }}', '{{ material.title }}')">
+                Preview
+            </button>
 
-                                    <div class="modal fade" id="modal{{ material.id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-xl modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-light">
-                                                    <h5 class="modal-title fw-bold">{{ material.title }}</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body p-0">
-                                                    <div class="ratio ratio-16x9">
-                                                        <iframe src="{{ material.file.url }}" allow="autoplay"></iframe>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <a href="{{ material.file.url }}" class="btn btn-success" target="_blank">View Fullscreen</a>
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                {% empty %}
-                                <li class="list-group-item text-muted small py-3">No materials uploaded for this course yet.</li>
-                                {% endfor %}
-                            </ul>
+            <button type="button" class="btn btn-sm btn-primary"
+                    onclick="handleDownload('{{ material.file.url }}')">
+                Download
+            </button>
+        </div>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-muted small py-3">No materials uploaded yet.</li>
+    {% endfor %}
+</ul>
                         </div>
                     </div>
                 </div>
                 {% empty %}
-                <div class="alert alert-warning">No courses found for this specific Level and Semester.</div>
+                <div class="alert alert-warning">No courses found for this specific selection.</div>
                 {% endfor %}
             </div>
         {% endif %}
     </div>
 </div>
 
+<div class="modal fade" id="universalPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="previewTitle">File Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closePreview()"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="ratio ratio-16x9">
+                    <iframe id="previewFrame" src="" allow="autoplay"></iframe>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="" id="fullViewBtn" class="btn btn-success" target="_blank">Open Fullscreen</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closePreview()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPreview(url, title) {
+    const frame = document.getElementById('previewFrame');
+    const titleElement = document.getElementById('previewTitle');
+    const fullBtn = document.getElementById('fullViewBtn');
+
+    titleElement.innerText = title;
+    frame.src = url; // Only loads when user clicks
+    fullBtn.href = url;
+
+    var myModal = new bootstrap.Modal(document.getElementById('universalPreviewModal'));
+    myModal.show();
+}
+
+function closePreview() {
+    document.getElementById('previewFrame').src = "";
+}
+
+function handleDownload(url) {
+    // This creates a temporary invisible link only when the button is clicked
+    // This stops the browser from auto-downloading on page load
+    const tempLink = document.createElement('a');
+    tempLink.href = url;
+    tempLink.target = '_blank';
+    document.body.appendChild(tempLink);
+    tempLink.click();
+    document.body.removeChild(tempLink);
+}
+</script>
+
 <style>
-    /* Styling to make the accordion look cleaner */
     .accordion-button:not(.collapsed) {
         background-color: #e7f1ff;
         color: #0d6efd;
-    }
-    .accordion-button::after {
-        background-size: 1rem;
     }
     .btn-group .btn {
         padding: 0.4rem 1rem;
