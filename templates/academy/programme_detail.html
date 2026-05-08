@@ -15,9 +15,10 @@
         <div class="card-body">
             <h6 class="text-muted fw-bold small mb-3">STEP 1: SELECT LEVEL</h6>
             <div class="btn-group">
-                {% for level in "100,200,300,400"|split:"," %}
-                <a href="?level={{ level }}" class="btn {% if selected_level == level %}btn-primary{% else %}btn-outline-primary{% endif %}">Level {{ level }}</a>
-                {% endfor %}
+                <a href="?level=100" class="btn {% if selected_level == '100' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 100</a>
+                <a href="?level=200" class="btn {% if selected_level == '200' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 200</a>
+                <a href="?level=300" class="btn {% if selected_level == '300' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 300</a>
+                <a href="?level=400" class="btn {% if selected_level == '400' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 400</a>
             </div>
         </div>
     </div>
