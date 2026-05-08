@@ -42,10 +42,12 @@ ROOT_URLCONF = 'team_gerama.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        # THIS LINE BELOW IS THE KEY
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -53,7 +55,6 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'team_gerama.wsgi.application'
 
 DATABASES = {
@@ -84,7 +85,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # settings.py
-MEDIA_URL = '/study_materials/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'study_materials')
+MMEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # This is important for your PDF previews to work in the browser
 X_FRAME_OPTIONS = 'SAMEORIGIN'
