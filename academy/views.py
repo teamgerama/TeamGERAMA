@@ -49,13 +49,12 @@ def level_detail(request, pk, level):
 def semester_detail(request, pk, level, semester):
     programme = get_object_or_404(Programme, pk=pk)
 
-    # This filter must match EXACTLY what is in the Admin
+    # Change this line in your semester_detail view
     courses = Course.objects.filter(
         programme=programme,
         level=level,
         semester=semester
-    ).prefetch_related('material_set')  # This forces Django to grab the files early
-
+    )  # Remove the .prefetch_related('material_set') for now
     context = {
         'programme': programme,
         'level': level,
