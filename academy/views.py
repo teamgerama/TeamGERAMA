@@ -28,10 +28,14 @@ def dept_detail(request, dept_id):
         'programmes': programmes
     })
 
-# STAGE 5: Programme Detail (Level Selection)
 def programme_detail(request, pk):
     programme = get_object_or_404(Programme, pk=pk)
-    return render(request, 'academy/programme_detail.html', {'programme': programme})
+    # Define the levels here and pass them to the template
+    levels = ['100', '200', '300', '400']
+    return render(request, 'academy/programme_detail.html', {
+        'programme': programme,
+        'levels': levels
+    })
 
 # STAGE 6: Level Detail (Semester Selection)
 def level_detail(request, pk, level):
