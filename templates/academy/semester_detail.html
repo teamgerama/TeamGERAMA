@@ -17,16 +17,23 @@
             </h2>
             <div id="c{{ course.id }}" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
                 <div class="accordion-body">
-                    <ul class="list-group list-group-flush">
-                        {% for material in course.material_set.all %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>{{ material.title }}</span>
-                            <a href="{{ material.file.url }}" class="btn btn-sm btn-primary" download>Download</a>
-                        </li>
-                        {% empty %}
-                        <li class="text-muted small">No files uploaded yet.</li>
-                        {% endfor %}
-                    </ul>
+                   <ul class="list-group list-group-flush">
+    {% for material in course.material_set.all %}
+    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+        <span>
+            <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
+            <!-- Use the material title, or fall back to the course name if title is blank -->
+            {{ material.title|default:course.name }}
+        </span>
+        <div class="btn-group">
+            <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
+            <a href="{{ material.file.url }}" class="btn btn-sm btn-primary" download>Download</a>
+        </div>
+    </li>
+    {% empty %}
+    <li class="text-muted small p-3">No files uploaded yet.</li>
+    {% endfor %}
+</ul>
                 </div>
             </div>
         </div>
