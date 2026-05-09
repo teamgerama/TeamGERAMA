@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5">
+    <div class="mb-4">
+        <h2 class="fw-bold">{{ programme.name }}</h2>
+        <span class="badge bg-success">Level {{ level }}</span>
+        <span class="badge bg-warning text-dark">Semester {{ semester }}</span>
+    </div>
+
+    <div class="accordion shadow-sm" id="courseAccordion">
+        {% for course in courses %}
+        <div class="accordion-item mb-2">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#c{{ course.id }}">
+                    {{ course.code }}: {{ course.name }}
+                </button>
+            </h2>
+            <div id="c{{ course.id }}" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+                <div class="accordion-body">
+                    <ul class="list-group list-group-flush">
+                        {% for material in course.material_set.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span><i class="bi bi-file-earmark-pdf text-danger me-2"></i>{{ material.title }}</span>
+                            <a href="{{ material.file.url }}" class="btn btn-sm btn-primary" download>Download</a>
+                        </li>
+                        {% empty %}
+                        <li class="text-muted small">No files uploaded yet.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">No courses found for this selection.</div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-5">
+        <a href="{% url 'level_detail' programme.pk level %}" class="btn btn-link text-success p-0">
+            <i class="bi bi-arrow-left"></i> Back to Semesters
+        </a>
+    </div>
+</div>
+{% endblock %}

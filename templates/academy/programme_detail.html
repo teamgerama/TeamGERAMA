@@ -1,150 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container mt-5">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb small">
-        <li class="breadcrumb-item text-muted">{{ programme.department.school.name }}</li>
-        <li class="breadcrumb-item text-muted">{{ programme.department.name }}</li>
-        <li class="breadcrumb-item active">{{ programme.name }}</li>
-      </ol>
-    </nav>
-
-    <h2 class="fw-bold mb-4">{{ programme.name }} Resources</h2>
-
-    <div class="card mb-3 shadow-sm">
-        <div class="card-body">
-            <h6 class="text-muted fw-bold small mb-3">STEP 1: SELECT LEVEL</h6>
-            <div class="btn-group">
-                <a href="?level=100" class="btn {% if selected_level == '100' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 100</a>
-                <a href="?level=200" class="btn {% if selected_level == '200' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 200</a>
-                <a href="?level=300" class="btn {% if selected_level == '300' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 300</a>
-                <a href="?level=400" class="btn {% if selected_level == '400' %}btn-primary{% else %}btn-outline-primary{% endif %}">Level 400</a>
-            </div>
+<div class="container my-5 text-center">
+    <h2 class="fw-bold">{{ programme.name }}</h2>
+    <p class="text-muted">Select your current level</p>
+    <div class="row g-3 mt-4">
+        {% for lvl in "100,200,300,400"|split:"," %}
+        <div class="col-6 col-md-3">
+            <a href="{% url 'level_detail' programme.pk lvl %}" class="btn btn-outline-success btn-lg w-100 py-4 shadow-sm fw-bold">
+                Level {{ lvl }}
+            </a>
         </div>
-    </div>
-
-    {% if selected_level %}
-    <div class="card mb-4 shadow-sm border-info">
-        <div class="card-body">
-            <h6 class="text-info fw-bold small mb-3">STEP 2: SELECT SEMESTER (Level {{ selected_level }})</h6>
-            <div class="btn-group">
-                <a href="?level={{ selected_level }}&semester=1" class="btn {% if selected_semester == '1' %}btn-info text-white{% else %}btn-outline-info{% endif %}">Semester 1</a>
-                <a href="?level={{ selected_level }}&semester=2" class="btn {% if selected_semester == '2' %}btn-info text-white{% else %}btn-outline-info{% endif %}">Semester 2</a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="row">
-        {% if not selected_level or not selected_semester %}
-            <div class="col-12 text-center py-5 border rounded bg-light shadow-sm">
-                <i class="bi bi-info-circle text-muted fs-2"></i>
-                <p class="text-muted mt-2">Please select <strong>Level and Semester</strong> to browse course materials.</p>
-            </div>
-        {% else %}
-            <h5 class="mb-4 fw-bold">Courses for L{{ selected_level }} - Semester {{ selected_semester }}</h5>
-
-            <div class="accordion shadow-sm" id="courseAccordion">
-                {% for course in courses %}
-                <div class="accordion-item mb-2 border">
-                    <h2 class="accordion-header" id="heading{{ course.id }}">
-                        <button class="accordion-button collapsed fw-bold text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ course.id }}" aria-expanded="false" aria-controls="collapse{{ course.id }}">
-                            {{ course.code }}: {{ course.name }}
-                        </button>
-                    </h2>
-                    <div id="collapse{{ course.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ course.id }}" data-bs-parent="#courseAccordion">
-                        <div class="accordion-body p-0">
-                           <ul class="list-group list-group-flush">
-    {% for material in course.materials.all %}
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-file-earmark-text text-primary me-3 fs-5"></i>
-            <span class="fw-semibold">{{ material.title }}</span>
-        </div>
-        <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-outline-primary"
-                    onclick="openPreview('{{ material.file.url }}', '{{ material.title }}')">
-                Preview
-            </button>
-
-            <button type="button" class="btn btn-sm btn-primary"
-                    onclick="handleDownload('{{ material.file.url }}')">
-                Download
-            </button>
-        </div>
-    </li>
-    {% empty %}
-    <li class="list-group-item text-muted small py-3">No materials uploaded yet.</li>
-    {% endfor %}
-</ul>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="alert alert-warning">No courses found for this specific selection.</div>
-                {% endfor %}
-            </div>
-        {% endif %}
+        {% endfor %}
     </div>
 </div>
-
-<div class="modal fade" id="universalPreviewModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="previewTitle">File Preview</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="closePreview()"></button>
-            </div>
-            <div class="modal-body p-0">
-                <div class="ratio ratio-16x9">
-                    <iframe id="previewFrame" src="" allow="autoplay"></iframe>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="" id="fullViewBtn" class="btn btn-success" target="_blank">Open Fullscreen</a>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closePreview()">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-function openPreview(url, title) {
-    const frame = document.getElementById('previewFrame');
-    const titleElement = document.getElementById('previewTitle');
-    const fullBtn = document.getElementById('fullViewBtn');
-
-    titleElement.innerText = title;
-    frame.src = url; // Only loads when user clicks
-    fullBtn.href = url;
-
-    var myModal = new bootstrap.Modal(document.getElementById('universalPreviewModal'));
-    myModal.show();
-}
-
-function closePreview() {
-    document.getElementById('previewFrame').src = "";
-}
-
-function handleDownload(url) {
-    // This creates a temporary invisible link only when the button is clicked
-    // This stops the browser from auto-downloading on page load
-    const tempLink = document.createElement('a');
-    tempLink.href = url;
-    tempLink.target = '_blank';
-    document.body.appendChild(tempLink);
-    tempLink.click();
-    document.body.removeChild(tempLink);
-}
-</script>
-
-<style>
-    .accordion-button:not(.collapsed) {
-        background-color: #e7f1ff;
-        color: #0d6efd;
-    }
-    .btn-group .btn {
-        padding: 0.4rem 1rem;
-    }
-</style>
 {% endblock %}

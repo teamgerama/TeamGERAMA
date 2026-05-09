@@ -2,13 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # The Landing Page (The green one we just built)
     path('', views.home, name='home'),
-
-    # The Resources Entry Point (Should point to your school list view)
-    # Replace 'views.school_list' if your function is named differently (e.g. views.index)
     path('resources/', views.school_list, name='resources'),
-
-    # The Detail Page
+    path('school/<int:school_id>/', views.school_detail, name='school_detail'),
+    path('department/<int:dept_id>/', views.dept_detail, name='dept_detail'),
     path('programme/<int:pk>/', views.programme_detail, name='programme_detail'),
+    path('programme/<int:pk>/level/<str:level>/', views.level_detail, name='level_detail'),
+    path('programme/<int:pk>/level/<str:level>/semester/<str:semester>/', views.semester_detail, name='semester_detail'),
 ]

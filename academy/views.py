@@ -54,3 +54,26 @@ def programme_detail(request, pk):
         'selected_level': selected_level,
         'selected_semester': selected_semester,
     })
+
+# ... (home, school_list, school_detail, dept_detail remain the same)
+
+def programme_detail(request, pk):
+    programme = get_object_or_404(Programme, pk=pk)
+    return render(request, 'academy/programme_detail.html', {'programme': programme})
+
+def level_detail(request, pk, level):
+    programme = get_object_or_404(Programme, pk=pk)
+    return render(request, 'academy/level_detail.html', {
+        'programme': programme,
+        'level': level
+    })
+
+def semester_detail(request, pk, level, semester):
+    programme = get_object_or_404(Programme, pk=pk)
+    courses = Course.objects.filter(programme=programme, level=level, semester=semester)
+    return render(request, 'academy/semester_detail.html', {
+        'programme': programme,
+        'level': level,
+        'semester': semester,
+        'courses': courses
+    })
