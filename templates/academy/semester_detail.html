@@ -1,50 +1,73 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="container my-5">
+    <!-- Breadcrumbs & Header -->
     <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'programme_list' %}" class="text-success text-decoration-none">Programmes</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'programme_detail' programme.pk %}" class="text-success text-decoration-none">{{ programme.name }}</a></li>
+                <li class="breadcrumb-item active">Level {{ level }}</li>
+            </ol>
+        </nav>
         <h2 class="fw-bold">{{ programme.name }}</h2>
-        <span class="badge bg-success">Level {{ level }}</span>
-        <span class="badge bg-warning text-dark">Semester {{ semester }}</span>
+        <div class="mt-2">
+            <span class="badge bg-success px-3 py-2">Level {{ level }}</span>
+            <span class="badge bg-warning text-dark px-3 py-2">Semester {{ semester }}</span>
+        </div>
     </div>
 
+    <!-- Course Accordion -->
     <div class="accordion shadow-sm" id="courseAccordion">
         {% for course in courses %}
-        <div class="accordion-item mb-2">
+        <div class="accordion-item mb-2 border-0 shadow-sm">
             <h2 class="accordion-header">
-                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#c{{ course.id }}">
-                    {{ course.code }}: {{ course.name }}
+                <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#c{{ course.id }}">
+                    <span class="me-2 text-primary">{{ course.code }}</span> {{ course.name }}
                 </button>
             </h2>
             <div id="c{{ course.id }}" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
-                <div class="accordion-body">
-                   <ul class="list-group list-group-flush">
-    {% for material in course.material_set.all %}
-    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-        <span>
-            <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
-            <!-- Use the material title, or fall back to the course name if title is blank -->
-            {{ material.title|default:course.name }}
-        </span>
-        <div class="btn-group">
-            <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-primary" target="_blank">View</a>
-            <a href="{{ material.file.url }}" class="btn btn-sm btn-primary" download>Download</a>
-        </div>
-    </li>
-    {% empty %}
-    <li class="text-muted small p-3">No files uploaded yet.</li>
-    {% endfor %}
-</ul>
+                <div class="accordion-body bg-light">
+                    <ul class="list-group list-group-flush rounded">
+                        {% for material in course.material_set.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-bottom px-0">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-file-earmark-pdf-fill text-danger fs-4 me-3"></i>
+                                <span class="fw-medium">
+                                    {# Falls back to Course Name if Title is empty in Admin #}
+                                    {{ material.title|default:course.name }}
+                                </span>
+                            </div>
+                            <div class="btn-group">
+                                <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                    <i class="bi bi-eye me-1"></i> View
+                                </a>
+                                <a href="{{ material.file.url }}" class="btn btn-sm btn-primary" download>
+                                    <i class="bi bi-download me-1"></i> Download
+                                </a>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item bg-transparent text-muted italic py-3">
+                            <i class="bi bi-info-circle me-2"></i> No files uploaded yet for this course.
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
         </div>
         {% empty %}
-        <div class="alert alert-info">No courses found for this selection.</div>
+        <div class="alert alert-info border-0 shadow-sm">
+            <i class="bi bi-search me-2"></i> No courses found for Level {{ level }} - Semester {{ semester }}.
+        </div>
         {% endfor %}
     </div>
 
+    <!-- Back Button -->
     <div class="mt-5">
-        <a href="{% url 'level_detail' programme.pk level %}" class="btn btn-link text-success p-0">
-            <i class="bi bi-arrow-left"></i> Back to Semesters
+        <a href="{% url 'level_detail' programme.pk level %}" class="btn btn-link text-success p-0 text-decoration-none">
+            <i class="bi bi-arrow-left-circle-fill me-1"></i> Back to Semesters
         </a>
     </div>
 </div>

@@ -48,10 +48,18 @@ def level_detail(request, pk, level):
 # STAGE 7: Semester Detail (Course & Material List)
 def semester_detail(request, pk, level, semester):
     programme = get_object_or_404(Programme, pk=pk)
-    courses = Course.objects.filter(programme=programme, level=level, semester=semester)
-    return render(request, 'academy/semester_detail.html', {
+
+    # This filter must match EXACTLY what is in the Admin
+    courses = Course.objects.filter(
+        programme=programme,
+        level=level,
+        semester=semester
+    ).prefetch_related('material_set')  # This forces Django to grab the files early
+
+    context = {
         'programme': programme,
         'level': level,
         'semester': semester,
-        'courses': courses
-    })
+        'courses': courses,
+    }
+    return render(request, 'academy/semester_detail.html', context)

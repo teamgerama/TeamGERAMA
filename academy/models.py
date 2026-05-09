@@ -39,11 +39,10 @@ class Course(models.Model):
 
 # MOVED: Material is now back at the left margin (No longer inside Course)
 class Material(models.Model):
-    # Ensure null=True and blank=True are present
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='materials', null=True, blank=True)
-    title = models.CharField(max_length=255)
+    # Adding related_name='materials' makes it easier for the template to find the files
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='materials')
+    title = models.CharField(max_length=200, blank=True)
     file = models.FileField(upload_to='study_materials/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.title} ({self.course.name if self.course else 'No Course'})"
+        return self.title if self.title else f"Material for {self.course.name}"
