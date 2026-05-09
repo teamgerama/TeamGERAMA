@@ -48,17 +48,14 @@ def level_detail(request, pk, level):
 # STAGE 7: Semester Detail (Course & Material List)
 def semester_detail(request, pk, level, semester):
     programme = get_object_or_404(Programme, pk=pk)
-
-    # Change this line in your semester_detail view
     courses = Course.objects.filter(
         programme=programme,
         level=level,
         semester=semester
-    )  # Remove the .prefetch_related('material_set') for now
-    context = {
+    )
+    return render(request, 'academy/semester_detail.html', {
         'programme': programme,
         'level': level,
         'semester': semester,
-        'courses': courses,
-    }
-    return render(request, 'academy/semester_detail.html', context)
+        'courses': courses
+    })

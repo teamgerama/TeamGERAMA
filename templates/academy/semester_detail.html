@@ -2,9 +2,9 @@
 
 {% block content %}
 <div class="container my-5">
-    <!-- Breadcrumbs & Header -->
+    <!-- Header -->
     <div class="mb-4">
-        <h2 class="fw-bold">{{ programme.name }}</h2>
+        <h2 class="fw-bold text-dark">{{ programme.name }}</h2>
         <div class="mt-2">
             <span class="badge bg-success px-3 py-2">Level {{ level }}</span>
             <span class="badge bg-warning text-dark px-3 py-2">Semester {{ semester }}</span>
@@ -14,35 +14,30 @@
     <!-- Course Accordion -->
     <div class="accordion shadow-sm" id="courseAccordion">
         {% for course in courses %}
-        <div class="accordion-item mb-2 border-0 shadow-sm">
+        <div class="accordion-item mb-2 border shadow-sm">
             <h2 class="accordion-header">
-                <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#c{{ course.id }}">
+                <button class="accordion-button collapsed fw-bold text-dark opacity-100" type="button" data-bs-toggle="collapse" data-bs-target="#c{{ course.id }}" style="color: #212529 !important;">
                     <span class="me-2 text-primary">{{ course.code }}</span> {{ course.name }}
                 </button>
             </h2>
             <div id="c{{ course.id }}" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
-                <div class="accordion-body bg-light">
-                    <ul class="list-group list-group-flush rounded">
-                        {# Using course.material_set.all as per your Django configuration #}
+                <div class="accordion-body bg-white">
+                    <ul class="list-group list-group-flush">
                         {% for material in course.material_set.all %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-bottom px-0">
-                            <div class="d-flex align-items-center">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-bottom">
+                            <div class="d-flex align-items-center text-dark">
                                 <i class="bi bi-file-earmark-pdf-fill text-danger fs-4 me-3"></i>
-                                <span class="fw-medium">
+                                <span class="fw-bold">
                                     {{ material.title|default:course.name }}
                                 </span>
                             </div>
                             <div class="btn-group">
-                                <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-secondary" target="_blank">
-                                    View
-                                </a>
-                                <a href="{{ material.file.url }}" class="btn btn-sm btn-primary" download>
-                                    Download
-                                </a>
+                                <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-dark" target="_blank">View</a>
+                                <a href="{{ material.file.url }}" class="btn btn-sm btn-primary" download>Download</a>
                             </div>
                         </li>
                         {% empty %}
-                        <li class="list-group-item bg-transparent text-muted py-3">
+                        <li class="list-group-item text-muted py-3">
                             No files uploaded yet.
                         </li>
                         {% endfor %}
@@ -51,7 +46,7 @@
             </div>
         </div>
         {% empty %}
-        <div class="alert alert-info">
+        <div class="alert alert-info border-0 shadow-sm">
             No courses found for this selection.
         </div>
         {% endfor %}
@@ -59,7 +54,7 @@
 
     <!-- Back Button -->
     <div class="mt-5">
-        <a href="{% url 'level_detail' programme.pk level %}" class="btn btn-link text-success p-0 text-decoration-none">
+        <a href="{% url 'level_detail' programme.pk level %}" class="btn btn-link text-success p-0 text-decoration-none fw-bold">
             <i class="bi bi-arrow-left-circle-fill me-1"></i> Back to Semesters
         </a>
     </div>
