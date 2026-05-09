@@ -1,28 +1,33 @@
 from django.contrib import admin
 from .models import School, Department, Programme, Course, Material
 
+
 # --- INLINES ---
-# These allow you to jump from School -> Dept -> Programme -> Course in one flow.
-
-class DepartmentInline(admin.TabularInline):
-    model = Department
-    extra = 1
-    show_change_link = True
-
-class ProgrammeInline(admin.TabularInline):
-    model = Programme
-    extra = 1
-    show_change_link = True
-
-class CourseInline(admin.TabularInline):
-    model = Course
-    extra = 1
-    fields = ('code', 'name', 'level', 'semester')
-    show_change_link = True
 
 class MaterialInline(admin.TabularInline):
     model = Material
-    extra = 1
+    extra = 1  # Gives you one empty row to upload a new file directly from the Course page
+    fields = ('title', 'file')
+
+
+class CourseInline(admin.TabularInline):
+    model = Course
+    extra = 0
+    fields = ('code', 'name', 'level', 'semester')
+    show_change_link = True
+
+
+class ProgrammeInline(admin.TabularInline):
+    model = Programme
+    extra = 0
+    show_change_link = True
+
+
+class DepartmentInline(admin.TabularInline):
+    model = Department
+    extra = 0
+    show_change_link = True
+
 
 # --- MAIN ADMIN INTERFACE ---
 
@@ -30,6 +35,7 @@ class MaterialInline(admin.TabularInline):
 class SchoolAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
+    inlines = [DepartmentInline]
 
 
 @admin.register(Department)
@@ -37,6 +43,7 @@ class DepartmentAdmin(admin.ModelAdmin):
     list_display = ('name', 'school')
     list_filter = ('school',)
     search_fields = ('name',)
+    inlines = [ProgrammeInline]
 
 
 @admin.register(Programme)
@@ -44,27 +51,45 @@ class ProgrammeAdmin(admin.ModelAdmin):
     list_display = ('name', 'department', 'get_school')
     list_filter = ('department__school', 'department')
     search_fields = ('name',)
-
+    inlines = [CourseInline]
 
     def get_school(self, obj):
         return obj.department.school
+
     get_school.short_description = 'School'
+
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    # Simplified list for a cleaner "attractive" look
-    list_display = ('code', 'name', 'level', 'semester')
-    list_editable = ('level', 'semester')
-    list_filter = ('programme__department__school', 'programme', 'level', 'semester')
-    search_fields = ('name', 'code')
+    # Highly informative layout
+    list_display = ('code', 'name', 'programme', 'level', 'semester')
+    list_filter = ('programme', 'level', 'semester')
+    search_fields = ('code', 'name')
+
+    # MAGIC HAPPENS HERE: Upload materials directly inside the Course edit page!
+    inlines = [MaterialInline]
 
 
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
-    # Removed Title and redundant Dept info for a minimal look
-    list_display = ('course', 'get_level', 'file')
-    list_filter = ('course__level', 'course__semester')
+    # Professional, minimal list showing exactly what you need
+    list_display = ('title', 'course', 'get_level', 'get_semester', 'file_status')
+    list_filter = ('course__programme', 'course__level', 'course__semester')
+    search_fields = ('title', 'course__code', 'course__name')
 
     def get_level(self, obj):
         return obj.course.level
+
     get_level.short_description = 'Level'
+
+    def get_semester(self, obj):
+        return obj.course.semester
+
+    get_semester.short_description = 'Semester'
+
+    def file_status(self, obj):
+        if obj.file:
+            return "✅ Uploaded"
+        return "❌ Missing"
+
+    file_status.short_description = 'File'
