@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class School(models.Model):
     name = models.CharField(max_length=255)
     def __str__(self): return self.name
@@ -34,3 +35,17 @@ class Material(models.Model):
 
     def __str__(self):
         return self.title if self.title else f"Material for {self.course.name}"
+
+
+class Announcement(models.Model):
+        date = models.DateField()
+        title = models.CharField(max_length=200)
+        description = models.TextField()
+        icon = models.CharField(max_length=50, default="🗓️", help_text="Paste an emoji here")
+        created_at = models.DateTimeField(auto_now_add=True)
+
+        class Meta:
+            ordering = ['-date']  # Shows the newest updates first
+
+        def __str__(self):
+            return self.title
