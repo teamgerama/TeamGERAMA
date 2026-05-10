@@ -3,7 +3,7 @@
 <div class="container my-5">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb small">
-            <li class="breadcrumb-item"><a href="{% url 'resources' %}" class="text-success text-decoration-none">Schools</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'school_list' %}" class="text-success text-decoration-none">Schools</a></li>
             <li class="breadcrumb-item">
                 <a href="{% url 'school_detail' department.school.id %}" class="text-success text-decoration-none">{{ department.school.name }}</a>
             </li>
