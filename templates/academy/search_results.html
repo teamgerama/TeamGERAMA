@@ -1,21 +1,63 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h3>Search Results for "{{ query }}"</h3>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark">Search Results for "{{ query }}"</h2>
+        <span class="badge bg-primary px-3 py-2">{{ programmes.count|add:courses.count }} results found</span>
+    </div>
     <hr>
-    <div class="list-group mt-4">
+
+    <h4 class="fw-bold mt-5 mb-3 text-success"><i class="bi bi-mortarboard-fill me-2"></i>Programmes</h4>
+    <div class="list-group shadow-sm mb-5">
         {% for prog in programmes %}
-            <a href="{% url 'programme_detail' prog.pk %}" class="list-group-item list-group-item-action py-3">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ prog.name }}</h5>
-                    <small class="text-muted">{{ prog.department.school.name }}</small>
+            <a href="{% url 'programme_detail' prog.pk %}" class="list-group-item list-group-item-action py-3 border-start border-success border-4">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <h5 class="mb-1 fw-bold text-dark">{{ prog.name }}</h5>
+                    <small class="badge bg-light text-dark border">{{ prog.department.school.name }}</small>
                 </div>
-                <p class="mb-1 text-muted">{{ prog.department.name }}</p>
+                <p class="mb-0 text-muted small"><i class="bi bi-building me-1"></i>{{ prog.department.name }}</p>
             </a>
         {% empty %}
-            <div class="alert alert-warning">No programmes found matching your search.</div>
+            <p class="text-muted ms-2">No programmes matched your query.</p>
         {% endfor %}
     </div>
-    <a href="{% url 'home' %}" class="btn btn-secondary mt-3">View All Schools</a>
+
+    <h4 class="fw-bold mt-4 mb-3 text-primary"><i class="bi bi-book-fill me-2"></i>Courses & Materials</h4>
+    <div class="list-group shadow-sm">
+        {% for course in courses %}
+            <a href="{% url 'semester_detail' course.programme.pk course.level course.semester %}" class="list-group-item list-group-item-action py-3 border-start border-primary border-4">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <h5 class="mb-1 fw-bold text-dark">
+                        <span class="text-primary">{{ course.code }}</span>: {{ course.name }}
+                    </h5>
+                    <div>
+                        <span class="badge bg-info text-dark">L{{ course.level }}</span>
+                        <span class="badge bg-warning text-dark">Sem {{ course.semester }}</span>
+                    </div>
+                </div>
+                <p class="mb-0 text-muted small">
+                    Part of: <strong>{{ course.programme.name }}</strong>
+                </p>
+            </a>
+        {% empty %}
+            <p class="text-muted ms-2">No specific courses matched your query.</p>
+        {% endfor %}
+    </div>
+
+    {% if not programmes and not courses %}
+        <div class="text-center py-5">
+            <i class="bi bi-search text-muted" style="font-size: 4rem;"></i>
+            <h3 class="mt-3 text-muted">No results found</h3>
+            <p>Try searching for a different keyword, course code, or programme name.</p>
+            <a href="{% url 'home' %}" class="btn btn-success rounded-pill px-4 mt-3">Go Back Home</a>
+        </div>
+    {% else %}
+        <div class="mt-5">
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                <i class="bi bi-arrow-left me-1"></i> Back to Home
+            </a>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
