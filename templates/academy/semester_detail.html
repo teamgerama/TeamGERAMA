@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <div class="container my-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{% url 'school_list' %}" class="text-success text-decoration-none">Schools</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'level_detail' programme.pk level %}" class="text-success text-decoration-none">Level {{ level }}</a></li>
+            <li class="breadcrumb-item active">Semester {{ semester }}</li>
+        </ol>
+    </nav>
+
     <div class="mb-4">
         <h2 class="fw-bold text-dark">{{ programme.name }}</h2>
         <div class="mt-2">
@@ -14,21 +21,18 @@
         {% for course in courses %}
         <div class="accordion-item mb-3 border shadow-sm rounded">
             <h2 class="accordion-header">
-                <button class="accordion-button collapsed fw-bold text-dark opacity-100" type="button" data-bs-toggle="collapse" data-bs-target="#c{{ course.id }}" style="color: #212529 !important; background-color: #f8f9fa;">
+                <button class="accordion-button collapsed fw-bold text-dark opacity-100" type="button" data-bs-toggle="collapse" data-bs-target="#c{{ course.id }}" style="background-color: #f8f9fa;">
                     <span class="me-2 text-primary">{{ course.code }}</span>: {{ course.name }}
                 </button>
             </h2>
             <div id="c{{ course.id }}" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
                 <div class="accordion-body bg-white">
                     <ul class="list-group list-group-flush">
-                        {# UPDATED: Uses 'materials' instead of 'material_set' #}
                         {% for material in course.materials.all %}
                         <li class="list-group-item d-flex justify-content-between align-items-center px-0 border-bottom">
                             <div class="d-flex align-items-center text-dark">
                                 <i class="bi bi-file-earmark-pdf-fill text-danger fs-4 me-3"></i>
-                                <span class="fw-bold">
-                                    {{ material.title|default:course.name }}
-                                </span>
+                                <span class="fw-bold">{{ material.title|default:course.name }}</span>
                             </div>
                             <div class="btn-group">
                                 <a href="{{ material.file.url }}" class="btn btn-sm btn-outline-dark" target="_blank">View</a>
@@ -36,7 +40,7 @@
                             </div>
                         </li>
                         {% empty %}
-                        <li class="list-group-item text-muted py-3">
+                        <li class="list-group-item text-muted py-3 text-center">
                             <i class="bi bi-exclamation-circle me-2"></i> No files uploaded for this course yet.
                         </li>
                         {% endfor %}

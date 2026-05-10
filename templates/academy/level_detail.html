@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-5 text-center">
-    <h2 class="fw-bold">{{ programme.name }} <span class="text-success">Level {{ level }}</span></h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb small justify-content-center">
+            <li class="breadcrumb-item"><a href="{% url 'school_list' %}" class="text-success text-decoration-none">Schools</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'programme_detail' programme.pk %}" class="text-success text-decoration-none">{{ programme.name }}</a></li>
+            <li class="breadcrumb-item active">Level {{ level }}</li>
+        </ol>
+    </nav>
+
+    <h2 class="fw-bold mt-4">{{ programme.name }} <span class="text-success">Level {{ level }}</span></h2>
     <p class="text-muted">Which semester are you looking for?</p>
-    <div class="row g-4 mt-4 justify-content-center">
+    <div class="row g-4 mt-2 justify-content-center">
         <div class="col-md-5">
             <a href="{% url 'semester_detail' programme.pk level '1' %}" class="card p-5 shadow-sm text-decoration-none border-0 bg-light">
                 <h3 class="fw-bold text-success">Semester 1</h3>
