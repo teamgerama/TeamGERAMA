@@ -5,8 +5,11 @@ from .models import School, Department, Programme, Course, Material, Announcemen
 
 class MaterialInline(admin.TabularInline):
     model = Material
-    extra = 1
+    # This gives you 10 empty file slots immediately when you open a Course
+    extra = 10
     fields = ('title', 'file')
+    # This allows you to see the file name clearly
+    show_change_link = True
 
 class CourseInline(admin.TabularInline):
     model = Course
@@ -50,13 +53,17 @@ class ProgrammeAdmin(admin.ModelAdmin):
         return obj.department.school
     get_school.short_description = 'School'
 
+
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('code', 'name', 'programme', 'level', 'semester')
-    list_filter = ('programme', 'level', 'semester')
+    list_display = ('code', 'name', 'level', 'semester', 'programme')
+    list_filter = ('level', 'semester', 'programme')
     search_fields = ('code', 'name')
+    # This is the magic: it lets you add many materials inside the course page
     inlines = [MaterialInline]
 
+    # Adding this makes it easier to duplicate courses if needed
+    save_as = True
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
     list_display = ('title', 'course', 'get_level', 'get_semester', 'file_status')
