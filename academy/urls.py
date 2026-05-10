@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
-    path('resources/', views.school_list, name='resources'),
+    path('resources/', views.school_list, name='school_list'),  # Name synced here
     path('school/<int:school_id>/', views.school_detail, name='school_detail'),
     path('department/<int:dept_id>/', views.dept_detail, name='dept_detail'),
     path('programme/<int:pk>/', views.programme_detail, name='programme_detail'),
