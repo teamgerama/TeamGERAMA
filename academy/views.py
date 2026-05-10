@@ -1,13 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
-from .models import School, Department, Programme, Course, Material
+from .models import School, Department, Programme, Course, Material, Announcement
 
-
-# STAGE 1: Home (Now with functional Search)
+# STAGE 1: Home
 def home(request):
     query = request.GET.get('q')
     if query:
-        # Searches for matching Programmes or Course Codes/Names
         programmes = Programme.objects.filter(name__icontains=query)
         courses = Course.objects.filter(
             Q(name__icontains=query) | Q(code__icontains=query)
@@ -18,15 +16,13 @@ def home(request):
             'courses': courses
         })
 
-    # If no search, just show the standard home page
-    return render(request, 'academy/home.html')
-
+    announcements = Announcement.objects.all()[:3]
+    return render(request, 'academy/home.html', {'announcements': announcements})
 
 # STAGE 2: School List
 def school_list(request):
     schools = School.objects.all()
     return render(request, 'academy/school_list.html', {'schools': schools})
-
 
 # STAGE 3: School Detail
 def school_detail(request, school_id):
@@ -37,7 +33,6 @@ def school_detail(request, school_id):
         'departments': departments
     })
 
-
 # STAGE 4: Department Detail
 def dept_detail(request, dept_id):
     department = get_object_or_404(Department, id=dept_id)
@@ -46,7 +41,6 @@ def dept_detail(request, dept_id):
         'department': department,
         'programmes': programmes
     })
-
 
 # STAGE 5: Programme Detail
 def programme_detail(request, pk):
@@ -57,8 +51,7 @@ def programme_detail(request, pk):
         'levels': levels
     })
 
-
-# STAGE 6: Level Detail (Semester Selection)
+# STAGE 6: Level Detail
 def level_detail(request, pk, level):
     programme = get_object_or_404(Programme, pk=pk)
     return render(request, 'academy/level_detail.html', {
@@ -66,11 +59,9 @@ def level_detail(request, pk, level):
         'level': level
     })
 
-
-# STAGE 7: Semester Detail (Course & Material List)
+# STAGE 7: Semester Detail
 def semester_detail(request, pk, level, semester):
     programme = get_object_or_404(Programme, pk=pk)
-    # Optimized query to fetch courses for the specific selection
     courses = Course.objects.filter(
         programme=programme,
         level=level,
