@@ -1,18 +1,19 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path # Added re_path
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.views.static import serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('academy.urls')), # This connects your app
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-if not settings.DEBUG:
-    from django.views.static import serve
-    import os
-    urlpatterns += [
-        path('study_materials/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
-    ]
-else:
+    path('', include('academy.urls')),
+]
+
+# This handles media files for BOTH Local (Debug=True) and Render (Debug=False)
+if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # This ensures that even on Render, the /media/ URL path works
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]

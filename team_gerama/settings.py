@@ -1,14 +1,15 @@
 import os
 from pathlib import Path
 import dj_database_url
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-ldg!_z)dz&=!1s00=joizz=0x5+*l4ymaz9dtt3%(d1&y6c%d&'
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-ldg!_z)dz&=!1s00=joizz=0x5+*l4ymaz9dtt3%(d1&y6c%d&')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-
+# SMART DEBUG: True on your PC, False on Render automatically
+DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = [
     'teamgerama.onrender.com',
@@ -16,6 +17,7 @@ ALLOWED_HOSTS = [
     'localhost'
 ]
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,7 +44,6 @@ ROOT_URLCONF = 'team_gerama.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # THIS LINE BELOW IS THE KEY
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -55,8 +56,11 @@ TEMPLATES = [
         },
     },
 ]
+
 WSGI_APPLICATION = 'team_gerama.wsgi.application'
 
+# Database configuration
+# Uses PostgreSQL on Render, SQLite locally
 DATABASES = {
     'default': dj_database_url.config(
         default=f'sqlite:///{os.path.join(BASE_DIR, "db.sqlite3")}',
@@ -64,6 +68,7 @@ DATABASES = {
     )
 }
 
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -71,6 +76,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -81,11 +87,16 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# This allows WhiteNoise to compress files for faster loading
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WhiteNoise storage for production
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# settings.py
-MMEDIA_URL = '/media/'
+# MEDIA FILES (Fixed Typo)
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# This is important for your PDF previews to work in the browser
+
+# Browser security for PDF/File previews
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
