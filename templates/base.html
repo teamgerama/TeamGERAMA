@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEAM GERAMA</title>
+    <title>TEAM GERAMA | Engineering Resources</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -35,13 +35,19 @@
         .footer {
             background-color: var(--primary-color);
         }
+        .footer a:hover {
+            color: #ffc107 !important; /* Yellow hover for links */
+        }
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'home' %}">TEAM GERAMA</a>
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" height="35" class="me-2" alt="Logo">
+                TEAM GERAMA
+            </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
@@ -76,14 +82,14 @@
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="{% static 'logo.png' %}" height="40" class="me-2" alt="GERAMA Logo">
+                        <img src="{% static 'images/logo.jpg' %}" height="40" class="me-2" alt="GERAMA Logo">
                         <h5 class="mb-0 fw-bold">GERAMA</h5>
                     </div>
                     <p class="small text-secondary">
                         Ghana Engineering Resources & Academic Materials Association — empowering engineering excellence at UENR through free, comprehensive academic resources.
                     </p>
                     <div class="d-flex gap-3 mt-4">
-                        <a href="https://wa.me/233555749497" class="text-white fs-5"><i class="bi bi-whatsapp"></i></a>
+                        <a href="https://wa.me/233555749497" class="text-white fs-5" target="_blank"><i class="bi bi-whatsapp"></i></a>
                         <a href="#" class="text-white fs-5"><i class="bi bi-facebook"></i></a>
                         <a href="#" class="text-white fs-5"><i class="bi bi-linkedin"></i></a>
                     </div>
@@ -101,8 +107,8 @@
                 <div class="col-lg-2 col-md-6">
                     <h6 class="fw-bold mb-4 text-warning small">RESOURCES</h6>
                     <ul class="list-unstyled small">
-                        <li class="mb-2"><a href="/?q=Level+100" class="text-secondary text-decoration-none">L100 Materials</a></li>
-                        <li class="mb-2"><a href="/?q=Level+200" class="text-secondary text-decoration-none">L200 Materials</a></li>
+                        <li class="mb-2"><a href="{% url 'home' %}?q=Level+100" class="text-secondary text-decoration-none">L100 Materials</a></li>
+                        <li class="mb-2"><a href="{% url 'home' %}?q=Level+200" class="text-secondary text-decoration-none">L200 Materials</a></li>
                         <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Past Questions</a></li>
                     </ul>
                 </div>
@@ -120,15 +126,15 @@
                             <i class="bi bi-geo-alt-fill me-2 text-warning"></i> UENR, Sunyani, Bono Region, Ghana
                         </li>
                     </ul>
-                    <a href="#" class="btn btn-primary btn-sm rounded-pill px-4 mt-2">
+                    <a href="https://drive.google.com" target="_blank" class="btn btn-primary btn-sm rounded-pill px-4 mt-2">
                         <i class="bi bi-google-drive me-2"></i> Open Google Drive
                     </a>
                 </div>
             </div>
             <hr class="my-5 border-secondary">
-            <div class="d-flex justify-content-between flex-wrap small text-secondary">
-                <p>© 2026 GERAMA Academic Resources · All rights reserved</p>
-                <p>Developed by <b>Alexander O. Dwumaah</b> · Editor: <b>Edem H.K Prince</b></p>
+            <div class="d-flex justify-content-between align-items-center flex-wrap small text-secondary">
+                <p class="mb-0">© 2026 GERAMA Academic Resources · All rights reserved</p>
+                <p class="mb-0">Developed by <b>Alexander O. Dwumaah</b> · Editor: <b>Edem H.K Prince</b></p>
             </div>
         </div>
     </footer>
